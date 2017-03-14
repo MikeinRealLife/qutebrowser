@@ -33,7 +33,7 @@ from PyQt5.QtWebEngineWidgets import (QWebEngineSettings, QWebEngineProfile,
 
 from qutebrowser.browser import shared
 from qutebrowser.config import config, websettings
-from qutebrowser.utils import objreg, utils, standarddir, javascript
+from qutebrowser.utils import objreg, utils, standarddir, javascript, log
 
 
 class Attribute(websettings.Attribute):
@@ -158,6 +158,14 @@ def init(args):
     """Initialize the global QWebSettings."""
     if args.enable_webengine_inspector:
         os.environ['QTWEBENGINE_REMOTE_DEBUGGING'] = str(utils.random_port())
+
+    if not os.environ.get('QUTE_NO_OPENGL_WORKAROUND'):
+        try:
+            from OpenGL import GL
+        except ImportError:
+            pass
+        else:
+            log.misc.debug("Imported PyOpenGL as workaround")
 
     profile = QWebEngineProfile.defaultProfile()
     _init_profile(profile)
