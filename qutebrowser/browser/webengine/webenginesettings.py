@@ -25,6 +25,7 @@ Module attributes:
 """
 
 import os
+import logging
 
 # pylint: disable=no-name-in-module,import-error,useless-suppression
 from PyQt5.QtWebEngineWidgets import (QWebEngineSettings, QWebEngineProfile,
@@ -160,6 +161,8 @@ def init(args):
         os.environ['QTWEBENGINE_REMOTE_DEBUGGING'] = str(utils.random_port())
 
     if not os.environ.get('QUTE_NO_OPENGL_WORKAROUND'):
+        # Hide "No OpenGL_accelerate module loaded: ..." message
+        logging.getLogger('OpenGL.acceleratesupport').propagate = False
         try:
             from OpenGL import GL
         except ImportError:
